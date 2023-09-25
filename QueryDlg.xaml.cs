@@ -11,8 +11,8 @@ namespace DM_WpfControls;
 public partial class QueryDlg : UserControl {
   public string DialogHostIdentifier { get; set; } = "MainDlgHost";
   public Style TextBoxStyle { set => edtDlgHostText.Style = value; }
-  public Style ButonOkStyle { set => btnOk.Style = value; }
-  public Style ButonCancelStyle { set => btnCancel.Style = value; }
+  public Style ButtonOkStyle { set => btnOk.Style = value; }
+  public Style ButtonCancelStyle { set => btnCancel.Style = value; }
 
   public QueryDlg() => InitializeComponent();
 
@@ -27,7 +27,7 @@ public partial class QueryDlg : UserControl {
     return (bool?)result == true ? edtDlgHostText.Text : null;
   }
 
-  public async void Execute(QueryDlgParams p) {
+  public async void Show(QueryDlgParams p) {
     var s = await ExecuteDlg(p);
 
     if (!string.IsNullOrEmpty(s)) p.OnOk(s);
@@ -50,7 +50,7 @@ class QueryDlgCtx : INotifyPropertyChanged {
   public void OnPropertyChanged(string e) => OnPropertyChanged(new PropertyChangedEventArgs(e));
 
   string v = "";
-  static readonly Thickness defaultButtonMarginTop = new(0, 5, 0, 0);
+  static readonly Thickness defaultButtonMarginTop = new(0, 10, 0, 0);
   public ValidationRule[]? Validators { get; set; } = null;
   bool isValid = true;
 
