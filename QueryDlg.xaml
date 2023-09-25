@@ -36,6 +36,7 @@
       Orientation="Horizontal">
 
       <Button
+        x:Name="btnOk"
         Width="{Binding ActualWidth, ElementName=btnCancel, Mode=OneWay}"
         Command="{x:Static md:DialogHost.CloseDialogCommand}"
         Content="_OK"
