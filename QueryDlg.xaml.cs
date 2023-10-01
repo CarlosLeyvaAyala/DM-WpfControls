@@ -60,7 +60,8 @@ class QueryDlgCtx : INotifyPropertyChanged {
 
   string hint = "";
   public string Hint {
-    get => hint; set {
+    get => hint;
+    set {
       hint = value;
       OnPropertyChanged(nameof(Hint));
     }
