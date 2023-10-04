@@ -76,9 +76,12 @@ class SelectStrDlgCtx : INotifyPropertyChanged {
 public class DisplayStrings {
   public string Display { get; set; } = "";
   public string Value { get; set; } = "";
+  public string CenterRightDetail { get; set; } = "";
+  public bool HasCRD => !string.IsNullOrEmpty(CenterRightDetail);
   public override string ToString() => Display;
-  public DisplayStrings(string display, string value) {
+  public DisplayStrings(string display, string value, string centerRightDetail = "") {
     Display = display;
     Value = value;
+    CenterRightDetail = centerRightDetail;
   }
 }

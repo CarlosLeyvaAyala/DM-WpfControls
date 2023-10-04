@@ -49,9 +49,51 @@
       x:Name="lstSelect"
       Grid.Row="1"
       Margin="20"
+      HorizontalContentAlignment="Stretch"
       d:ItemsSource="{d:SampleData ItemCount=34}"
       ItemsSource="{Binding Items}"
-      SelectionMode="Single" />
+      SelectionMode="Single">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <Grid d:DataContext="{d:DesignInstance Type=local:DisplayStrings}">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="auto" />
+              <RowDefinition Height="auto" />
+              <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.Resources>
+              <Style x:Key="detail" TargetType="TextBlock">
+                <Setter Property="Opacity" Value="0.4" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+              </Style>
+            </Grid.Resources>
+
+            <!--  DISPLAY  -->
+            <TextBlock
+              Grid.Row="1"
+              VerticalAlignment="Center"
+              Text="{Binding Display, FallbackValue=Display}"
+              TextTrimming="CharacterEllipsis" />
+
+            <!--  CRD  -->
+            <TextBlock
+              Grid.Row="1"
+              Grid.Column="1"
+              HorizontalAlignment="Right"
+              Style="{StaticResource detail}"
+              Text="{Binding CenterRightDetail, FallbackValue=Detail}"
+              TextAlignment="Right"
+              Visibility="{Binding HasCRD, Converter={StaticResource BooleanToVisibilityConverter}}" />
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
 
     <StackPanel
       Grid.Row="2"
