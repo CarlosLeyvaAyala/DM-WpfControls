@@ -11,8 +11,23 @@ public enum IconPosition {
   Left
 }
 
-public partial class IconRadioButton : UserControl {
-  public IconRadioButton() => InitializeComponent();
+public class IconRadioButton : RadioButton {
+  readonly StackPanel panel = new();
+  readonly PackIcon icon = new();
+  readonly TextBlock txt = new();
+
+  public IconRadioButton() : base() {
+    icon.Kind = PackIconKind.Square;
+    txt.Text = "OPTION";
+
+    panel.Orientation = Orientation.Vertical;
+    panel.Children.Add(icon);
+    panel.Children.Add(txt);
+    panel.UpdateLayout();
+    AddChild(panel);
+
+    IconPosition = IconPosition.Top;
+  }
 
   #region DependencyProperty : IconPosition
   /// <summary>
@@ -40,14 +55,14 @@ public partial class IconRadioButton : UserControl {
   void IconPosPropertyChanged(IconPosition pos) {
     (var pO, var icHA, var icVA, var edM) = pos switch {
       IconPosition.Top => (Orientation.Vertical, HorizontalAlignment.Center, VerticalAlignment.Top, new Thickness(0, 4, 0, 0)),
-      IconPosition.Left => (Orientation.Horizontal, HorizontalAlignment.Left, VerticalAlignment.Bottom, new Thickness(4, 0, 0, 0)),
+      IconPosition.Left => (Orientation.Horizontal, HorizontalAlignment.Left, VerticalAlignment.Center, new Thickness(4, 0, 0, 0)),
       _ => throw new ArgumentOutOfRangeException(null, nameof(IconPosition)),
     };
 
     panel.Orientation = pO;
-    piIcon.HorizontalAlignment = icHA;
-    piIcon.VerticalAlignment = icVA;
-    edtName.Margin = edM;
+    icon.HorizontalAlignment = icHA;
+    icon.VerticalAlignment = icVA;
+    txt.Margin = edM;
   }
   #endregion
 
@@ -70,7 +85,7 @@ public partial class IconRadioButton : UserControl {
 
   static void IconKindPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
     ((IconRadioButton)d).IconKindPropertyChanged((PackIconKind)e.NewValue);
-  void IconKindPropertyChanged(PackIconKind v) => piIcon.Kind = v;
+  void IconKindPropertyChanged(PackIconKind v) => icon.Kind = v;
   #endregion
 
   #region DependencyProperty : Text
@@ -95,71 +110,6 @@ public partial class IconRadioButton : UserControl {
 
   static void TextPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
     ((IconRadioButton)d).TextPropertyChanged((string)e.NewValue);
-  void TextPropertyChanged(string v) => edtName.Text = v;
-  #endregion
-
-  #region DependencyProperty : GroupName
-  public string GroupName {
-    get => (string)GetValue(GroupNameProperty);
-    set {
-      GroupNamePropertyChanged(value);
-      SetValue(GroupNameProperty, value);
-    }
-  }
-
-  [Category("Common")]
-  public static readonly DependencyProperty GroupNameProperty
-      = DependencyProperty.Register(
-        nameof(GroupName),
-        typeof(string),
-        typeof(IconRadioButton),
-        new PropertyMetadata(default(string), propertyChangedCallback: GroupNamePropertyChanged));
-
-  static void GroupNamePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-    ((IconRadioButton)d).GroupNamePropertyChanged((string)e.NewValue);
-  void GroupNamePropertyChanged(string v) => rb.GroupName = v;
-  #endregion
-
-  #region DependencyProperty : IsChecked
-  public bool IsChecked {
-    get => (bool)GetValue(IsCheckedProperty);
-    set {
-      IsCheckedPropertyChanged(value);
-      SetValue(IsCheckedProperty, value);
-    }
-  }
-
-  [Category("Common")]
-  public static readonly DependencyProperty IsCheckedProperty
-      = DependencyProperty.Register(
-        nameof(IsChecked),
-        typeof(bool),
-        typeof(IconRadioButton),
-        new PropertyMetadata(default(bool), propertyChangedCallback: IsCheckedPropertyChanged));
-
-  static void IsCheckedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-    ((IconRadioButton)d).IsCheckedPropertyChanged((bool)e.NewValue);
-  void IsCheckedPropertyChanged(bool v) => rb.IsChecked = v;
-  #endregion
-
-  #region Event : ClickEvent
-  public event RoutedEventHandler Click {
-    add => AddHandler(ClickEvent, value);
-    remove => RemoveHandler(ClickEvent, value);
-  }
-
-  public static readonly RoutedEvent ClickEvent
-      = EventManager.RegisterRoutedEvent(
-        nameof(Click),
-        RoutingStrategy.Bubble,
-        typeof(RoutedEventHandler),
-        typeof(IconRadioButton));
-
-  protected virtual void InternalClick() => RaiseEvent(new RoutedEventArgs(ClickEvent, this));
-
-  private void OnClick(object sender, RoutedEventArgs e) {
-    InternalClick();
-    e.Handled = true;
-  }
+  void TextPropertyChanged(string v) => txt.Text = v;
   #endregion
 }
