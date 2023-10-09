@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,10 +10,6 @@ namespace DM_WpfControls;
 
 public partial class SelectStringDlg : Window {
   public SelectStringDlg() => InitializeComponent();
-  private void OnOk(object sender, RoutedEventArgs e) {
-    if (lstSelect.SelectedItems == null) return;
-    DialogResult = true;
-  }
 
   public static void Execute(Window owner, SelectStringDlgParams p) {
     var dlg = new SelectStringDlg {
@@ -28,10 +25,35 @@ public partial class SelectStringDlg : Window {
       p.OnCancel?.Invoke();
   }
 
+  #region Setup
   void Init(SelectStringDlgParams p) {
     ctx.Items = p.Values;
     Title = p.Title ?? Title;
     lstSelect.SelectionMode = p.SelectionMode ?? SelectionMode.Single;
+    tbFilterByRegex.Visibility = p.RegexButton_Show == true ? Visibility.Visible : Visibility.Collapsed;
+    tbFilterByRegex.IsChecked = p.RegexButton_Checked == true;
+    SetFilterByRegex(p.RegexButton_Checked == true);
+  }
+
+  void SetFilterByRegex(bool value) {
+    regexRule.IsActive = value;
+    edtFilter.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+    ctx.UseRegex = value;
+  }
+  #endregion
+
+  #region Dialog events
+  #endregion
+  private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) => SetFilterByRegex(tbFilterByRegex.IsChecked == true);
+
+  private void OnOk(object sender, RoutedEventArgs e) {
+    if (lstSelect.SelectedItems == null) return;
+    DialogResult = true;
+  }
+
+  private void OnSelectDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+    if (lstSelect.SelectedItems == null) return;
+    DialogResult = true;
   }
 }
 
@@ -41,6 +63,8 @@ public record SelectStringDlgParams {
   public Action? OnCancel { get; init; }
   public string? Title { get; init; }
   public SelectionMode? SelectionMode { get; init; }
+  public bool? RegexButton_Show { get; init; }
+  public bool? RegexButton_Checked { get; init; }
 }
 
 
@@ -59,13 +83,33 @@ class SelectStrDlgCtx : INotifyPropertyChanged {
     }
   }
 
+  private bool useRegex;
+  public bool UseRegex {
+    get => useRegex;
+    set {
+      useRegex = value;
+      OnPropertyChanged(nameof(UseRegex));
+      OnPropertyChanged(nameof(Items));
+    }
+  }
+
   List<DisplayStrings> items = new();
   public List<DisplayStrings> Items {
-    get => string.IsNullOrEmpty(filter) ? items.OrderBy(i => i.Display).ToList() :
-      items.AsParallel()
-      .Where(i => i.Display.Contains(filter, StringComparison.CurrentCultureIgnoreCase))
-      .OrderBy(i => i.Display)
-      .ToList();
+    get {
+      Func<string, bool> GetFilterByRegex() {
+        var rx = new Regex(filter, RegexOptions.IgnoreCase);
+        return s => rx.Match(s).Success;
+      }
+
+      var compare = useRegex ? GetFilterByRegex() : s => s.Contains(filter, StringComparison.CurrentCultureIgnoreCase);
+
+      return
+        string.IsNullOrEmpty(filter) ? items.OrderBy(i => i.Display).ToList() :
+        items.AsParallel()
+        .Where(i => compare(i.Display))
+        .OrderBy(i => i.Display)
+        .ToList();
+    }
     set {
       items = value;
       OnPropertyChanged(nameof(Items));
