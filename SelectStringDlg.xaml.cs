@@ -43,7 +43,6 @@ public partial class SelectStringDlg : Window {
   #endregion
 
   #region Dialog events
-  #endregion
   private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) => SetFilterByRegex(tbFilterByRegex.IsChecked == true);
 
   private void OnOk(object sender, RoutedEventArgs e) {
@@ -55,6 +54,7 @@ public partial class SelectStringDlg : Window {
     if (lstSelect.SelectedItems == null) return;
     DialogResult = true;
   }
+  #endregion
 }
 
 public record SelectStringDlgParams {
