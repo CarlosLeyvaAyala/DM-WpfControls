@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace DM_WpfControls;
 
@@ -14,6 +15,8 @@ public partial class SelectStringDlg : Window {
   public static void Execute(Window owner, SelectStringDlgParams p) {
     var dlg = new SelectStringDlg {
       Owner = owner,
+      Width = p.Width ?? 400,
+      Height = p.Height ?? 500
     };
     dlg.Init(p);
 
@@ -33,6 +36,8 @@ public partial class SelectStringDlg : Window {
     tbFilterByRegex.Visibility = p.RegexButton_Show == true ? Visibility.Visible : Visibility.Collapsed;
     tbFilterByRegex.IsChecked = p.RegexButton_Checked == true;
     SetFilterByRegex(p.RegexButton_Checked == true);
+    grdSearch.Visibility = p.ShowSearchFilter == true ? Visibility.Visible : Visibility.Collapsed;
+    btnOk.Background = p.OkButton_Color ?? btnOk.Background;
   }
 
   void SetFilterByRegex(bool value) {
@@ -65,6 +70,10 @@ public record SelectStringDlgParams {
   public SelectionMode? SelectionMode { get; init; }
   public bool? RegexButton_Show { get; init; }
   public bool? RegexButton_Checked { get; init; }
+  public bool? ShowSearchFilter { get; init; }
+  public Brush? OkButton_Color { get; init; }
+  public double? Height { get; init; }
+  public double? Width { get; init; }
 }
 
 
