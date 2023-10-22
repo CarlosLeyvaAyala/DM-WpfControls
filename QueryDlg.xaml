@@ -21,7 +21,7 @@
       <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
     <TextBox
-      x:Name="edtDlgHostText"
+      x:Name="edtText"
       Grid.Row="0"
       Margin="0,5,0,0"
       VerticalAlignment="Top"

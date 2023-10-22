@@ -1,6 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,21 +11,19 @@ namespace DM_WpfControls;
 
 public partial class QueryDlg : UserControl {
   public string DialogHostIdentifier { get; set; } = "MainDlgHost";
-  public Style TextBoxStyle { set => edtDlgHostText.Style = value; }
+  public Style TextBoxStyle { set => edtText.Style = value; }
   public Style ButtonOkStyle { set => btnOk.Style = value; }
   public Style ButtonCancelStyle { set => btnCancel.Style = value; }
 
   public QueryDlg() => InitializeComponent();
 
   async Task<string?> ExecuteDlg(QueryDlgParams p) {
-    ctx.Validators = p.Validators;
-    ctx.Value = p.Text ?? "";
-    ctx.Hint = p.Hint;
+    Setup(p);
     Focus();
-    edtDlgHostText.Focus();
+    edtText.Focus();
     var result = await DialogHost.Show(this, DialogHostIdentifier);
 
-    return (bool?)result == true ? edtDlgHostText.Text : null;
+    return (bool?)result == true ? edtText.Text : null;
   }
 
   public async void Show(QueryDlgParams p) {
@@ -34,6 +33,31 @@ public partial class QueryDlg : UserControl {
     else p.OnCancel?.Invoke();
   }
 
+  void Setup(QueryDlgParams p) {
+    ctx.Validators = p.Validators;
+    ctx.Value = p.Text ?? "";
+    ctx.Hint = p.Hint;
+
+    edtText.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+
+    if (p.Multiline == true) {
+      edtText.Height = 200;
+      edtText.Width = 300;
+      edtText.AcceptsReturn = true;
+      edtText.TextWrapping = TextWrapping.Wrap;
+      edtText.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+    }
+    else {
+      edtText.Height = double.NaN;
+      edtText.Width = double.NaN;
+      edtText.AcceptsReturn = false;
+      edtText.TextWrapping = TextWrapping.NoWrap;
+      edtText.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+    }
+
+    Debug.WriteLine(edtText.Width);
+    Debug.WriteLine(edtText.Height);
+  }
 }
 
 public record QueryDlgParams {
@@ -42,6 +66,7 @@ public record QueryDlgParams {
   public string? Text { get; init; }
   public ValidationRule[]? Validators { get; init; }
   public Action? OnCancel { get; init; }
+  public bool? Multiline { get; init; }
 }
 
 class QueryDlgCtx : INotifyPropertyChanged {
