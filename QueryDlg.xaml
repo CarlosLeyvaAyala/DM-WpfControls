@@ -25,6 +25,7 @@
       Grid.Row="0"
       Margin="0,5,0,0"
       VerticalAlignment="Top"
+      TextAlignment="Left"
       md:HintAssist.Hint="{Binding Hint}"
       FontSize="18"
       Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />

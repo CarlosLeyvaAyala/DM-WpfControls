@@ -42,19 +42,20 @@ public partial class QueryDlg : UserControl {
 
     if (p.Multiline == true) {
       edtText.Height = 200;
-      edtText.Width = 300;
+      edtText.Width = p.TextBoxWidth ?? 300;
       edtText.AcceptsReturn = true;
       edtText.TextWrapping = TextWrapping.Wrap;
       edtText.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
     }
     else {
       edtText.Height = double.NaN;
-      edtText.Width = double.NaN;
+      edtText.Width = p.TextBoxWidth ?? double.NaN;
       edtText.AcceptsReturn = false;
       edtText.TextWrapping = TextWrapping.NoWrap;
       edtText.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
     }
 
+    edtText.FontSize = p.FontSize ?? 18;
     Debug.WriteLine(edtText.Width);
     Debug.WriteLine(edtText.Height);
   }
@@ -67,6 +68,8 @@ public record QueryDlgParams {
   public ValidationRule[]? Validators { get; init; }
   public Action? OnCancel { get; init; }
   public bool? Multiline { get; init; }
+  public double? TextBoxWidth { get; init; }
+  public double? FontSize { get; init; }
 }
 
 class QueryDlgCtx : INotifyPropertyChanged {
