@@ -36,7 +36,9 @@ public partial class SelectStringDlg : Window {
     tbFilterByRegex.Visibility = p.RegexButton_Show == true ? Visibility.Visible : Visibility.Collapsed;
     tbFilterByRegex.IsChecked = p.RegexButton_Checked == true;
     SetFilterByRegex(p.RegexButton_Checked == true);
-    grdSearch.Visibility = p.ShowSearchFilter == true ? Visibility.Visible : Visibility.Collapsed;
+    // Assume the filter will be shown if the regex button is explicitly asked for
+    var showSearch = p.RegexButton_Show == true ? true : p.ShowSearchFilter;
+    grdSearch.Visibility = showSearch == true ? Visibility.Visible : Visibility.Collapsed;
     btnOk.Background = p.OkButton_Color ?? btnOk.Background;
   }
 
