@@ -30,6 +30,7 @@ public partial class SelectStringDlg : Window {
 
   #region Setup
   void Init(SelectStringDlgParams p) {
+    ctx.Sorted = p.Sorted ?? true;
     ctx.Items = p.Values;
     Title = p.Title ?? Title;
     lstSelect.SelectionMode = p.SelectionMode ?? SelectionMode.Single;
@@ -73,6 +74,7 @@ public record SelectStringDlgParams {
   public bool? RegexButton_Show { get; init; }
   public bool? RegexButton_Checked { get; init; }
   public bool? ShowSearchFilter { get; init; }
+  public bool? Sorted { get; init; }
   public Brush? OkButton_Color { get; init; }
   public double? Height { get; init; }
   public double? Width { get; init; }
@@ -83,6 +85,7 @@ class SelectStrDlgCtx : INotifyPropertyChanged {
   public event PropertyChangedEventHandler? PropertyChanged;
   public void OnPropertyChanged(PropertyChangedEventArgs e) => PropertyChanged?.Invoke(this, e);
   public void OnPropertyChanged(string e) => OnPropertyChanged(new PropertyChangedEventArgs(e));
+  public bool Sorted { get; set; }
 
   string filter = "";
   public string Filter {
@@ -113,13 +116,8 @@ class SelectStrDlgCtx : INotifyPropertyChanged {
       }
 
       var compare = useRegex ? GetFilterByRegex() : s => s.Contains(filter, StringComparison.CurrentCultureIgnoreCase);
-
-      return
-        string.IsNullOrEmpty(filter) ? items.OrderBy(i => i.Display).ToList() :
-        items.AsParallel()
-        .Where(i => compare(i.Display))
-        .OrderBy(i => i.Display)
-        .ToList();
+      var itms = string.IsNullOrEmpty(filter) ? items : items.AsParallel().Where(i => compare(i.Display)).ToList();
+      return Sorted ? itms.OrderBy(i => i.Display).ToList() : itms;
     }
     set {
       items = value;
