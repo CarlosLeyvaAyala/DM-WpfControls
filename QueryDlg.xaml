@@ -27,6 +27,7 @@
       VerticalAlignment="Top"
       TextAlignment="Left"
       md:HintAssist.Hint="{Binding Hint}"
+      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
       FontSize="18"
       Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
 
