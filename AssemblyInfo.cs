@@ -4,6 +4,7 @@ using System.Windows.Markup;
 [assembly: XmlnsPrefix("http://cla.me/wpf/xaml/controls", "DM_WpfControls")]
 [assembly: XmlnsDefinition("http://cla.me/wpf/xaml/controls", "DM_WpfControls")]
 [assembly: XmlnsDefinition("http://cla.me/wpf/xaml/controls", "DM_WpfControls.Controls")]
+[assembly: XmlnsDefinition("http://cla.me/wpf/xaml/controls", "DM_WpfControls.Converters")]
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located
